@@ -1,3 +1,0 @@
-[submodule "components/drivers"]
-	path = components/drivers
-	url = https://github.com/pebri86/esplay-drivers
