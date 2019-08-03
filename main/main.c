@@ -64,7 +64,7 @@ char* VERSION = NULL;
 
 void indicate_error()
 {
-    
+
 }
 
 static void pset(UG_S16 x, UG_S16 y, UG_COLOR color)
@@ -255,7 +255,7 @@ void boot_application()
     }
 
     backlight_deinit();
-    
+
     // reboot
     esp_restart();
 }
@@ -917,7 +917,7 @@ void flash_firmware(const char* fullPath)
 
 static void ui_draw_title()
 {
-    const char* TITLE = "ESPLAY 2.0";
+    const char* TITLE = "ESPLAY MICRO BOOTLOADER";
 
     UG_FillFrame(0, 0, 319, 239, C_WHITE);
 
@@ -1210,7 +1210,7 @@ static void menu_main()
 
 void app_main(void)
 {
-    const char* VER_PREFIX = "Ver: ";
+	const char* VER_PREFIX = "Ver: ";
     size_t ver_size = strlen(VER_PREFIX) + strlen(COMPILEDATE) + 1 + strlen(GITREV) + 1;
     VERSION = malloc(ver_size);
     if (!VERSION) abort();
@@ -1228,6 +1228,7 @@ void app_main(void)
 
 
     display_init();
+    display_show_splash();
     display_clear(0xffff);
 
     UG_Init(&gui, pset, 320, 240);
