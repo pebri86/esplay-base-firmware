@@ -2,13 +2,12 @@
 #include "esp_wifi.h"
 #include "esp_system.h"
 #include "esp_event.h"
-#include "esp_event_loop.h"
 #include "nvs_flash.h"
 #include "driver/gpio.h"
 #include "esp_partition.h"
 #include "esp_ota_ops.h"
 #include "esp_heap_caps.h"
-#include "esp_flash_data_types.h"
+#include "esp_flash_partitions.h"
 #include "rom/crc.h"
 
 #include <string.h>

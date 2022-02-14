@@ -3,7 +3,6 @@
 # project subdirectory.
 #
 
-PROJECT_NAME := esplay-base-firmware
+PROJECT_NAME := esplay_base_firmware
 
 include $(IDF_PATH)/make/project.mk
-
