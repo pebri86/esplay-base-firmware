@@ -16,7 +16,8 @@
  *      DEFINES
  *********************/
 /*Clock out at 40 MHz*/
-#define SPI_CLOCK_SPEED 60000000
+#define SPI_CLOCK_SPEED (60 * 1000 * 1000)
+#define LCD_HOST       SPI2_HOST
 
 /**********************
  *      TYPEDEFS
