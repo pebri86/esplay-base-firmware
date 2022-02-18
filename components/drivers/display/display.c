@@ -16,7 +16,7 @@
 #include "splash.h"
 
 #define LINE_BUFFERS (2)
-#define LINE_COUNT (16)
+#define LINE_COUNT (24)
 
 // Pin Cofiguration
 #define DISP_SPI_MOSI 23
@@ -146,51 +146,47 @@ void display_poweroff(int percent)
     }
 }
 
-void write_frame_rectangleLE(short left, short top, short width, short height, uint16_t *buffer)
+void display_send_fb(uint16_t *buffer)
 {
-    short x, y, xv, yv;
-    int sending_line = -1;
-    int calc_line = 0;
+    short i, x, y;
+    int index, bufferIndex, sending_line = -1, calc_line = 0;
 
-    if (left < 0 || top < 0)
-        abort();
-    if (width < 1 || height < 1)
-        abort();
     if (buffer == NULL)
     {
-        for (y = top; y < height + top; y++)
+        for (y = 0; y < LCD_V_RES; y += LINE_COUNT) 
         {
-            xv = 0;
-            for (x = left; x < width + left; x++)
+            for (i = 0; i < LINE_COUNT; ++i)
             {
-                line[calc_line][xv] = 0;
-                xv++;
+                for (x = 0; x < LCD_H_RES; ++x)
+                {
+                    line[calc_line][x] = 0;
+                }
             }
-
             sending_line = calc_line;
             calc_line = !calc_line;
-            //send_lines_ext(y, left, width, line[sending_line], 1);
-            esp_lcd_panel_draw_bitmap(panel_handle, left, y, left + width, y + 1, line[sending_line]);
+            esp_lcd_panel_draw_bitmap(panel_handle, 0, y, LCD_H_RES, y + LINE_COUNT, line[sending_line]);
         }
     }
     else
     {
-        yv = 0;
-        for (y = top; y < top + height; y++)
+        for (y = 0; y < LCD_V_RES; y += LINE_COUNT)
         {
-            xv = 0;
-            for (int i = left; i < left + width; ++i)
+            for (i = 0; i < LINE_COUNT; ++i)
             {
-                uint16_t pixel = buffer[yv * width + xv];
-                line[calc_line][xv] = ((pixel << 8) | (pixel >> 8));
-                xv++;
-            }
+                if ((y + i) >= LCD_V_RES)
+                    break;
 
+                index = i * LCD_H_RES;
+                bufferIndex = (y + i) * LCD_H_RES;
+                for (x = 0; x < LCD_H_RES; ++x)
+                {
+                    uint16_t pixel = buffer[bufferIndex++];
+                    line[calc_line][index++] = ((pixel >> 8) | ((pixel & 0xff) << 8));
+                }
+            }
             sending_line = calc_line;
             calc_line = !calc_line;
-            //send_lines_ext(y, left, width, line[sending_line], 1);
-            esp_lcd_panel_draw_bitmap(panel_handle, left, y, left + width, y + 1, line[sending_line]);
-            yv++;
+            esp_lcd_panel_draw_bitmap(panel_handle, 0, y, LCD_H_RES, y + LINE_COUNT, line[sending_line]);
         }
     }
 }
@@ -220,7 +216,6 @@ void renderGfx(short left, short top, short width, short height, uint16_t *buffe
 
             sending_line = calc_line;
             calc_line = !calc_line;
-            //send_lines_ext(y, left, width, line[sending_line], 1);
             esp_lcd_panel_draw_bitmap(panel_handle, left, y, left + width, y + 1, line[sending_line]);
         }
     }
@@ -239,7 +234,6 @@ void renderGfx(short left, short top, short width, short height, uint16_t *buffe
 
             sending_line = calc_line;
             calc_line = !calc_line;
-            //send_lines_ext(y, left, width, line[sending_line], 1);
             esp_lcd_panel_draw_bitmap(panel_handle, left, y, left + width, y + 1, line[sending_line]);
             yv++;
         }
@@ -268,6 +262,7 @@ void display_clear(uint16_t color)
 {
     int sending_line = -1;
     int calc_line = 0;
+
     // clear the buffer
     for (int i = 0; i < LINE_BUFFERS; ++i)
     {
@@ -281,7 +276,6 @@ void display_clear(uint16_t color)
     {
         sending_line = calc_line;
         calc_line = !calc_line;
-        //send_lines_ext(y, 0, LCD_WIDTH, line[sending_line], LINE_COUNT);
         esp_lcd_panel_draw_bitmap(panel_handle, 0, y, 0 + LCD_H_RES, y + LINE_COUNT, line[sending_line]);
     }
 }

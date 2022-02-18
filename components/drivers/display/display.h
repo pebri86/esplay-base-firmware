@@ -15,7 +15,7 @@ extern "C"
 
 void display_init();
 void backlight_deinit();
-void write_frame_rectangleLE(short left, short top, short width, short height, uint16_t* buffer);
+void display_send_fb(uint16_t* buffer);
 void renderGfx(short left, short top, short width, short height, uint16_t* buffer, short sx, short sy, short tileSetWidth);
 void display_prepare();
 void display_show_hourglass();

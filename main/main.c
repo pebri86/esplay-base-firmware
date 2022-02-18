@@ -73,7 +73,7 @@ static void pset(UG_S16 x, UG_S16 y, UG_COLOR color)
 
 static void ui_update_display()
 {
-    write_frame_rectangleLE(0, 0, 320, 240, fb);
+    display_send_fb(fb);
 }
 
 static void ui_draw_image(short x, short y, short width, short height, uint16_t* data)
